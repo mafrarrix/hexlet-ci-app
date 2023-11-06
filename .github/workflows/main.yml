@@ -14,23 +14,24 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v3
 
       - name: Set up Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v3
         with:
           node-version: 18
 
       - name: Cache dependencies
         uses: actions/cache@v2
-
-      - name: Install dependencies
-        run: npm install
         with:
            path: ~/.npm
            key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}-${{ github.run_number }}-${{ github.run_id }}
            restore-keys: |
              ${{ runner.os }}-node-
+
+
+      - name: Install dependencies
+        run: npm install
 
       - name: Run tests
         run: npm test
