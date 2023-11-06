@@ -23,9 +23,14 @@ jobs:
 
       - name: Cache dependencies
         uses: actions/cache@v2
-        
+
       - name: Install dependencies
         run: npm install
+        with:
+           path: ~/.npm
+           key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}-${{ github.run_number }}-${{ github.run_id }}
+           restore-keys: |
+             ${{ runner.os }}-node-
 
       - name: Run tests
         run: npm test
