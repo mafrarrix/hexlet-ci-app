@@ -1,40 +1,20 @@
-name: CI Workflow
-
-on:
-  push:
-    branches:
-      - main
-  pull_request:
-    branches:
-      - main
-
+name: ci_app
+# on – определяет события, которые запускают воркфлоу
+on: push
 jobs:
+  # build – произвольно выбранное имя задания
+  # их может быть больше одного
   build:
+    # операционная система для работы воркфлоу
     runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: 18
-
-      - name: Cache dependencies
-        uses: actions/cache@v2
-        with:
-           path: ~/.npm
-           key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}-${{ github.run_number }}-${{ github.run_id }}
-           restore-keys: |
-             ${{ runner.os }}-node-
-
-
-      - name: Install dependencies
-        run: npm install
-
-      - name: Run tests
-        run: npm test
-
-      - name: Run linter
-        run: npm run lint
+    steps: # список шагов, которые надо выполнить
+      # Клонируем репозиторий
+      - uses: actions/checkout@v2
+      # Setup project
+      - run: make setup
+      # Start project
+      - run: make start
+      # Test project
+      - run: make test
+      # Lint project
+      - run: make lint
