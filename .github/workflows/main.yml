@@ -26,9 +26,19 @@ jobs:
         with:
            path: ~/.npm
            key: ${{ hashFiles('**/package-lock.json') }}-${{ github.run_number }}-${{ github.run_id }}
+      
+      - name: Authenticate with Snyk
+        run: npx snyk auth ${{ secrets.SNYK_TOKEN }}
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
 
       - name: Install dependencies
         run: npm install
+      
+      - name: Run Snyk to check for vulnerabilities
+        uses: snyk/actions/node@master
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
 
       - name: Run tests
         run: npm test
@@ -36,7 +46,3 @@ jobs:
       - name: Run linter
         run: npm run lint
      
-      - name: Run Snyk to check for vulnerabilities
-        uses: snyk/actions/node@master
-        env:
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
